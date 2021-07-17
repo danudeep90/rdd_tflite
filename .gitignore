@@ -1,0 +1,13 @@
+
+# Excluding out all training images
+datasets/train/
+datasets/train.tar.gz
+
+# Excluding virtual environment
+venv
+
+# Excluding csv files
+*.csv
+
+# Other files
+.DS_Store
