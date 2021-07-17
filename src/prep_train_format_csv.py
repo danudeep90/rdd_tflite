@@ -31,12 +31,6 @@ def main(input_train_file, input_valid_file, input_test_file, class_file):
 
     print("Preparing training dataset csv")
 
-    # Testing
-    input_train_file = "datasets/train.txt"
-    input_valid_file = "datasets/valid.txt"
-    input_test_file = "datasets/test.txt"
-    class_file = "damage_classes.txt"
-
     # dictionary to store list of image paths in each class
     imageListDict = defaultdict(set)
 
@@ -74,7 +68,7 @@ def main(input_train_file, input_valid_file, input_test_file, class_file):
         lst_img_details = value
 
         # Loop over each file and create a labels related info as well
-        for imgFilePath in lst_img_details[0:100]:
+        for imgFilePath in lst_img_details:
 
             # Stripping the newline character
             imgFilePath = imgFilePath.strip()
