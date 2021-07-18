@@ -19,7 +19,7 @@ from pytz import timezone
 import logging, sys
 
 
-def main(train_csv_path, num_epochs):
+def main(train_csv_path, num_epochs, out_foldpath):
 
     # Choosing a model architecture
     spec = model_spec.get('efficientdet_lite4')
@@ -40,10 +40,11 @@ def main(train_csv_path, num_epochs):
     model.evaluate(test_data)
     
     # Exporting the model
-    model.export(export_dir='.')
+    model.export(export_dir=out_foldpath)
 
     # Evaluate the tensorflow lite model
-    model.evaluate_tflite('model.tflite', test_data)
+    saved_model_path = os.path.join(out_foldpath,'model.tflite')
+    model.evaluate_tflite(saved_model_path, test_data)
 
 
 if __name__ == "__main__":
@@ -61,20 +62,26 @@ if __name__ == "__main__":
     train_csv_path = args.train_csv_path
     num_epochs = args.num_epochs
 
-    # Create a logging directory if it doesnt exist
-    logs_dirpath = os.path.join(os.getcwd(),"logs")
-    if not os.path.exists(logs_dirpath):
-        os.mkdir(logs_dirpath)
+    # Create a directory for runs if it doesnt exist
+    out_dirpath = os.path.join(os.getcwd(),"runs")
+    if not os.path.exists(out_dirpath):
+        os.mkdir(out_dirpath)
 
     # Log file name
     # Creating datetime type folders
     ist_tz = timezone('Asia/Kolkata')
     india_datetime = datetime.now(ist_tz)
-    file_prefix_str = india_datetime.strftime("%d_%b_%Y-%H_%M_%S")
-    log_file_name = "log"+"_"+file_prefix_str
+    folder_prefix_str = india_datetime.strftime("%d_%b_%Y-%H_%M_%S")
+    output_folder_name = "run"+"_"+folder_prefix_str
+    log_file_name = "train"+"_"+folder_prefix_str
+
+    # Create a directory for runs if it doesnt exist
+    out_foldpath = os.path.join(out_dirpath, output_folder_name)
+    if not os.path.exists(out_foldpath):
+        os.mkdir(out_foldpath)
 
     # Setup logger
-    log_file_full_path = os.path.join(logs_dirpath, log_file_name + ".log")
+    log_file_full_path = os.path.join(out_foldpath, log_file_name + ".log")
     logging.basicConfig(filename=log_file_full_path, level=logging.DEBUG)
     logger = logging.getLogger()
     sys.stderr.write = logger.error
@@ -84,4 +91,4 @@ if __name__ == "__main__":
     print("Starting training using {} for {} epochs".format(train_csv_path, num_epochs))
  
     # Function call
-    main(train_csv_path, num_epochs)
+    main(train_csv_path, num_epochs, out_foldpath)
