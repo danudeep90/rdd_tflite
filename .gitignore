@@ -11,3 +11,6 @@ venv
 
 # Other files
 .DS_Store
+
+# Excluding log folders
+logs
